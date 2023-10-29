@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "test": "tsx --experimental-test-coverage --test **/__test__.ts",
+    "test:watch": "tsx --test **/__test__.ts",
     "lint": "eslint index.ts",
     "build": "esbuild ./src/index.ts --platform=node --minify --bundle --sourcemap --sources-content=false --outfile=./dist/out.js",
     "start": "node dist/out.js"

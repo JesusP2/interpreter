@@ -1,4 +1,4 @@
-import { Token } from '@/token';
+import { Token, keywords } from '@/token';
 
 export class Lexer {
   input: string;
@@ -22,6 +22,7 @@ export class Lexer {
 
   nextToken() {
     let token: Token;
+    this.skipWhitespace();
     switch (this.ch) {
       case '=':
         token = { Type: 'ASSIGN', Literal: '=' };
@@ -47,10 +48,63 @@ export class Lexer {
       case '}':
         token = { Type: 'RBRACE', Literal: '}' };
         break;
-      default:
+      case 0:
         token = { Type: 'EOF', Literal: '' };
+        break;
+      default:
+        if (this.isLetter(this.ch)) {
+          const ident = this.readIdentifier();
+          if (ident === 'fn') {
+            token = { Type: 'FUNCTION', Literal: ident };
+          } else if (ident === 'let') {
+            token = { Type: 'LET', Literal: ident };
+          } else {
+            token = { Type: 'IDENT', Literal: ident };
+          }
+          return token;
+        } else if (this.isDigit(this.ch)) {
+          token = { Type: 'INT', Literal: this.readNumber() };
+          return token;
+        } else {
+          token = { Type: 'ILLEGAL', Literal: this.ch as string };
+        }
     }
     this.readChar();
     return token;
+  }
+
+  private readIdentifier() {
+    const position = this.position;
+    while (this.isLetter(this.ch)) {
+      this.readChar();
+    }
+    return this.input.slice(position, this.position);
+  }
+
+  private isLetter(ch: string | number) {
+    return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_';
+  }
+
+  private isDigit(ch: string | number) {
+    return '0' <= ch && ch <= '9';
+  }
+
+  private readNumber() {
+    const position = this.position;
+    while (this.isDigit(this.ch)) {
+      this.readChar();
+    }
+    return this.input.slice(position, this.position);
+  }
+
+  private skipWhitespace() {
+    while (
+      this.ch === ' ' ||
+      this.ch === '\t' ||
+      this.ch === '\n' ||
+      this.ch === '\r'
+    ) {
+      this.readChar();
+    }
   }
 }
