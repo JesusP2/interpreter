@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "watch": "tsx watch src/index.ts",
-    "lint": "eslint index.ts"
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint index.ts",
+    "build": "esbuild ./src/index.ts --platform=node --minify --bundle --sourcemap --sources-content=false --outfile=./dist/out.js",
+    "start": "node dist/out.js"
   },
   "keywords": [],
   "author": "",
