@@ -1,6 +1,6 @@
 export const tokenPool = {
   ILLEGAL: 'ILLEGAL',
-  EOF: 'EOF',
+  EOF: '',
   IDENT: 'IDENT',
   INT: 'INT',
   ASSIGN: '=',
@@ -17,9 +17,11 @@ export const tokenPool = {
 
 export type TokenPool = typeof tokenPool;
 
-export type TokenType = keyof typeof tokenPool;
+export type TokenType = keyof TokenPool;
 
-export type Token<K extends TokenType> = {
-  Type: K;
-  Literal: TokenPool[K];
-};
+export type Token = {
+  [K in keyof TokenPool]: {
+    Type: K;
+    Literal: TokenPool[K];
+  };
+}[keyof TokenPool];
