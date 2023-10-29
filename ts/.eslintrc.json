@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/eslintrc",
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "node",
+    "@typescript-eslint",
+    "prettier"
+  ],
+  "root": true,
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+      },
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "prettier/prettier": [
+          0,
+          {
+            "endOfLine": "auto"
+          }
+        ],
+        "quotes": [
+          "error",
+          "single",
+          {
+            "avoidEscape": true
+          }
+        ]
+      }
+    }
+  ]
+}
