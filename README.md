@@ -4,3 +4,5 @@
 - Flex some types (I plan to use 0 any's in the project, 0 idea how hard/easy this will be).
 
 - Use node builtin apis only (haven't written an interpreter in my life but shirley this cant be hard).
+
+I'm following [Thorsten Ball's book btw](https://interpreterbook.com)
