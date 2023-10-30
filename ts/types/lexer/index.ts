@@ -1,18 +1,43 @@
 import { TokenPool } from '@/token';
+import { ABC, Abc, type Eq } from '../utils'
 
-type Eq<A, B extends A> = 'passes';
+// type Lexer<
+//   I extends TokenPool[keyof TokenPool][],
+//   Acc extends unknown[] = []
+// > = I extends [infer Char, ...infer Rest]
+//   ? Rest extends TokenPool[keyof TokenPool][]
+//   ? Char extends TokenPool[keyof TokenPool]
+//   ? Lexer<Rest, [...Acc, CharToToken<Char>]>
+//   : never
+//   : never
+//   : Acc;
+
 type Lexer<
   I extends TokenPool[keyof TokenPool][],
   Acc extends unknown[] = []
-> = I extends [infer P, ...infer Args]
-  ? Args extends TokenPool[keyof TokenPool][]
-  ? P extends TokenPool[keyof TokenPool]
-  ? Lexer<Args, [...Acc, CharToToken<P>]>
+> = I extends [infer Char, ...infer Rest]
+  ? Char extends ' ' | '\t' | '\n' | '\r'
+  ? Rest extends TokenPool[keyof TokenPool][]
+  ? Char extends TokenPool[keyof TokenPool]
+  ? Lexer<Rest, Acc>
+  : Lexer<Rest, [...Acc, CharToToken<Char>]>
   : never
   : never
   : Acc;
 
-type CharToToken<Char extends TokenPool[keyof TokenPool]> = Char extends '='
+  // ? Rest extends TokenPool[keyof TokenPool][]
+  // ? Char extends TokenPool[keyof TokenPool]
+  // ? Lexer<Rest, [...Acc, CharToToken<Char>]>
+  // : never
+  // : never
+  // : Acc;
+
+
+// ? = then
+// : = else
+
+type CharToToken<Char extends TokenPool[keyof TokenPool]> = 
+  Char extends '='
   ? { Type: 'ASSIGN'; Literal: '=' }
   : Char extends ';'
   ? { Type: 'SEMICOLON'; Literal: ';' }
@@ -28,11 +53,15 @@ type CharToToken<Char extends TokenPool[keyof TokenPool]> = Char extends '='
   ? { Type: 'LBRACE'; Literal: '{' }
   : Char extends '}'
   ? { Type: 'RBRACE'; Literal: '}' }
-  : { Type: 'EOF'; Literal: '' };
+  : Char extends ''
+  ? { Type: 'EOF'; Literal: '' }
+: Char extends Abc | ABC
+? 
+
 
 type test_1 = [
   Eq<
-    Lexer<['=', '+', '(', ')', '{', '}', ',', ';']>,
+    Lexer<['=', '+', '(', ')', '{', '}', ',', ';', '']>,
     [
       { Type: 'ASSIGN'; Literal: '=' },
       { Type: 'PLUS'; Literal: '+' },
@@ -41,12 +70,13 @@ type test_1 = [
       { Type: 'LBRACE'; Literal: '{' },
       { Type: 'RBRACE'; Literal: '}' },
       { Type: 'COMMA'; Literal: ',' },
-      { Type: 'SEMICOLON'; Literal: ';' }
+      { Type: 'SEMICOLON'; Literal: ';' },
+      { Type: 'EOF'; Literal: '' }
     ]
   >
 ];
 
-// Expected to fail
+// NOTE: Expected to fail btw (btw)
 type test_2 = [
   Eq<
     Lexer<['=', '+', '+', '(', ')', '{', '(', '}', ')', ',', ';']>,
@@ -62,6 +92,15 @@ type test_2 = [
       { Type: 'RPAREN', Literal: ')' },
       { Type: 'COMMA', Literal: ',' },
       { Type: 'SEMICOLON', Literal: ';' },
+    ]
+  >
+];
+
+type test_3 = [
+  Eq<
+    Lexer<['=']>,
+    [
+      { Type: 'ASSIGN'; Literal: '=' },
     ]
   >
 ];
